@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js" > </script>  
+    <script>
+      const socket = io('http://localhost:3000');   // http://localhost:3000 ; //http://dev-vn.vtl-lab.com:8160/
+
+      socket.on('connect', function() {
+        console.log('Connected');
+        const lblResult = document.getElementById('result');
+        socket.on('changeStatusToAllEvent', function(data) { 
+          lblResult.innerHTML = data.result.numberMessages;
+        })
+
+        // get from server message
+        socket.on('welcomeEvent', function(data) { 
+          console.log(data);
+          const lblWelcome = document.getElementById('welcome');
+          lblWelcome.innerHTML = data;
+        })
+          
+        socket.on('disconnect', function() {
+          console.log('Disconnected');
+        });
+
+        // ----------------- Send data to server -----------------
+
+        // {parentId: 3, numberMessages: 1}: 
+        // true write red dot on bell notification
+        socket.emit('getNotification', { 
+            // token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.IntcInVzZXJuYW1lXCI6XCJ2aS5saDVAdnRsLXZ0bC5jb21cIixcInBhc3N3b3JkXCI6XCJBYTEyMzQ1NlwifTE2ODA4NTUyNzIi.YTFlkZfaIh8z6xq2smsrfBfPoHLdDmyuI9NzhJ-3ooo', 
+            token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.IntcInVzZXJuYW1lXCI6XCIwOTA2NDQwMzY4XCIsXCJwYXNzd29yZFwiOlwiQWExMjM0NTZcIixcInVzZXJfcm9sZV9pZFwiOlwiMVwifTE2ODI1MDEyMzIi._Wc5HNRuHiRqLnch8AQPlLiKkjpc0Pc02bNGPfDiMmA'
+          }, (data) => {
+            console.log(data)
+
+            const lblResult = document.getElementById('result');
+            lblResult.innerHTML = data.result.numberMessages;
+          }  
+        );  
+  
+        const btnReadMessage20 = document.getElementById('read-message20');
+        btnReadMessage20.addEventListener('click', () => {
+          socket.emit('viewDetailNotification', { id: 1 }, () => {} )  
+       
+        });
+
+        const btnReadMessage16 = document.getElementById('read-message16');
+        btnReadMessage16.addEventListener('click', () => {
+          socket.emit('viewDetailNotification', { id: 2 }, () => {} )  
+        });
+ 
+      }); 
+     
+    </script>
+    <style>
+      .panel {
+        border-radius: 10px;
+        border: 2px solid grey;
+        box-shadow: 5px 5px grey;
+        padding: 10px;
+        width: 300px;
+        display: flex;
+        flex-direction: column; 
+        gap: 10px;
+      }
+    </style>
+  </head> 
+  <body>
+    <div class="panel"> 
+      <button id="read-message20"> Read Message 20 </button>
+      <button id="read-message16"> Read Message 16 </button>
+
+      <div>  <label style="color: font-size: 20px" id="welcome"> </label> </div>
+      <div> <label style="color: blue; font-size: 20px" id="result"> </label> </div>
+    </div>
+
+  </body>
+</html>
